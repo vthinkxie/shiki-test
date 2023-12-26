@@ -1,14 +1,23 @@
-import {highlight} from "@/lib/shiki";
-async function getHTML() {
-  return await highlight(
-    `console.log('hi next.js')`,
-    'github-dark',
-    'javascript'
+'use client';
+import {getHTML} from "@/app/actions";
+import {Suspense, useState} from "react";
+
+
+ function Code() {
+  const [value, setValue] = useState("console.log('abc')")
+  const [html, setHTML] = useState("")
+  return (
+    <div>
+      <input value={value} onChange={e=>setValue(e.target.value)} />
+      <button onClick={async ()=>{
+        const highlight = await getHTML(value);
+        setHTML(highlight);
+      }}>Submit</button>
+      <div dangerouslySetInnerHTML={{__html: html}}></div>
+    </div>
   )
 }
-export default async function Home() {
-  const html = await getHTML()
-  return (
-    <div dangerouslySetInnerHTML={{__html: html}}></div>
-  )
+
+export default function Home() {
+  return <div><Code></Code></div>
 }
